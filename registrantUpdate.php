@@ -421,7 +421,6 @@
                     </td>
                 </tr>
             </table>
-
             <div class='table-actions'>
                 <input type="submit" name="cancel" value="Cancel">
                 <input type="submit" name="save" value="Save Changes">
