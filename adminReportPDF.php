@@ -1,4 +1,5 @@
 <?php
+/*Shemael Deslandes - 2306823*/
 // This is an administrator only report of registered activities.
 session_start();
 if (empty($_SESSION['cc_admin_authenticated'])) {

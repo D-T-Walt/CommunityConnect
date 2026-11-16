@@ -1,4 +1,5 @@
 <?php
+/*Shemael Deslandes - 2306823*/
 // Generates a PDF for the selected logged-in user's registration.
 session_start();
 if (empty($_SESSION['logged_in']) || empty($_SESSION['Email_Address'])) {

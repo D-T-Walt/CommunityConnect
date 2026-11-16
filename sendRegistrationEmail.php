@@ -1,4 +1,5 @@
 <?php
+/*Shemael Deslandes - 2306823*/
 // Sends a registration confirmation using PHPMailer.
 require_once __DIR__ . '/vendor/autoload.php';
 

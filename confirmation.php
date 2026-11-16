@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <!-- Diwani Walters - 2303848 -->
+<!--Shemael Deslandes - 2306823 -->
+<!--Olivia McFarlane - 2301555 -->
 <?php
 $file = "registrations.txt";
 $message = "";
@@ -199,7 +201,7 @@ require "connectDatabase.php";
             </div>
 
             <div class="header-center">
-                <h1>Registration: Personal Information</h1>
+                <h1>Registration: Review and Confirmation</h1>
             </div>
 
             <div class="header-right">

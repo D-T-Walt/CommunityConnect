@@ -1,4 +1,5 @@
 <?php
+    /*Kevon Hedman - 2203313 */
     session_start();
 
      // Only logged in participants can delete this page

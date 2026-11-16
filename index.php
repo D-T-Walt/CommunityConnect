@@ -4,19 +4,13 @@
         session_start();
         require "connectDatabase.php";
 
-
         // Check if the button was clicked and validate the form data
         if (isset($_POST["next"])) {
         //Make sure all required fields are filled out
             if (empty(trim($_POST['user'])) || empty(trim($_POST['pw']))) {
-                echo "<div class='popup-overlay'>
-                    <div class='popup-box popup-error'>
-                        <div class='popup-icon'>✕</div>
-                        <h2>Log in Failed</h2>
-                        <p>" . htmlspecialchars("⚠️ All fields are Required ⚠️") . "</p>
-                        <button type='button' onclick=\"window.location.href='index.php';\">OK</button>
-                    </div>
-                </div>";
+                echo "<h1 style='color: red; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%;'>⚠️ All fields are Required ⚠️</h1>";
+                header("Refresh: 2; url=index.php");
+            exit();
             } else{
                 $user=filter_input(INPUT_POST,'user',FILTER_VALIDATE_EMAIL);
                 $pw= $_POST['pw'];

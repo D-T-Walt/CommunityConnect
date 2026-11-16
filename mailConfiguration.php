@@ -1,4 +1,5 @@
 <?php
+/*Shemael Deslandes - 2306823*/
 // Fill in the missing SMTP details.
 return [
     'host' => 'smtp.gmail.com',

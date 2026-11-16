@@ -1,4 +1,5 @@
 <?php
+    /*Olivia McFarlane - 2301555 */
     session_start();
     require "connectDatabase.php";
 

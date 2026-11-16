@@ -1,6 +1,9 @@
 <?php session_start(); // This will enable protected admin PDF downloads ?>
 <!DOCTYPE html>
 <!-- Diwani Walters - 2303848 -->
+<!--Kevon Hedman - 2203313 -->
+<!--Shemael Deslandes - 2306823 -->
+
 <html>
 
     <head>

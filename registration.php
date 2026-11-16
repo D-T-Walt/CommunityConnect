@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!-- Diwani Walters - 2303848 -->
+<!--Olivia McFarlane - 2306823 -->
 <?php
     //Start the session to access session variables
     session_start();
