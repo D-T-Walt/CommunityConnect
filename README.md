@@ -7,7 +7,6 @@ CommunityConnect is a PHP/MySQL web application that lets community members regi
 ## Table of Contents
 
 - [Features](#features)
-- [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
 - [Installation & Setup](#installation--setup)
   - [1. Install a local server stack](#1-install-a-local-server-stack)
@@ -19,7 +18,6 @@ CommunityConnect is a PHP/MySQL web application that lets community members regi
   - [7. (Optional) Configure email](#7-optional-configure-email)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
-- [Troubleshooting](#troubleshooting)
 - [Security Notes](#security-notes)
 - [Authors](#authors)
 
@@ -27,33 +25,22 @@ CommunityConnect is a PHP/MySQL web application that lets community members regi
 
 ## Features
 
-- Registrant sign-up and login (passwords stored hashed with `password_hash`)
+- Registrant sign-up and login (passwords stored hashed with `password_hash` and verified with `password_verify`)
 - Register for a community activity by parish and preferred participation date
 - View, update and cancel/delete your registrations from the registrant portal
 - Email confirmation on registration (PHPMailer via Gmail SMTP)
 - Downloadable PDF registration confirmation (Dompdf)
 - Password-protected administrator dashboard with a downloadable PDF report
 
-## Tech Stack
-
-| Layer      | Technology                                  |
-|------------|---------------------------------------------|
-| Backend    | PHP 8.x (MySQLi)                            |
-| Database   | MySQL / MariaDB                             |
-| Frontend   | HTML, CSS                                   |
-| Libraries  | PHPMailer ^7.2, Dompdf ^3.1 (via Composer)  |
-| Local stack| XAMPP, WAMP or LAMP                         |
-
 ## Prerequisites
 
 - One of the following local server stacks (Apache + PHP + MySQL + phpMyAdmin):
-  - **XAMPP** (Windows / macOS / Linux) – https://www.apachefriends.org
+  - **XAMPP** (Windows/ macOS/ Linux) – https://www.apachefriends.org
   - **WAMP** (Windows) – https://www.wampserver.com
   - **LAMP** (Linux) – install Apache, MySQL/MariaDB, PHP and phpMyAdmin through your package manager
-- PHP 8.1 or newer is recommended (the SQL dump was generated on PHP 8.3 / MySQL 8.4)
+- PHP 8.1 or newer is recommended (the SQL dump was generated on PHP 8.3/ MySQL 8.4)
 - A modern web browser
 - *(Optional, for email)* A Gmail account with an App Password
-- *(Optional)* [Composer](https://getcomposer.org) – only needed if the `vendor/` folder is missing
 
 ## Installation & Setup
 
@@ -172,25 +159,16 @@ Registration confirmation emails are sent through Gmail SMTP using PHPMailer. Wi
        'from_name'  => 'CommunityConnect',
    ];
    ```
-
-#### Dependencies (only if `vendor/` is missing)
-
-The `vendor/` folder is bundled. If it is absent, run this from the project folder:
-
-```bash
-composer install
-```
-
 ## Usage
 
 **Registrants**
 1. Open `http://localhost/CommunityConnect/index.php`.
-2. Create an account via **New user? Click Here**, then log in.
-3. From the portal, register for an activity, choosing a parish and participation date.
+2. Create an account and register via **New user? Click Here**, then log in.
+3. From the portal, register for more activities, choosing a parish and participation date.
 4. View, update or delete your registrations, and download your PDF confirmation.
 
 **Administrators**
-1. Click the **Admin** link on the login page, or go to `http://localhost/CommunityConnect/admin.php`.
+1. Click the **Admin** link, or go to `http://localhost/CommunityConnect/admin.php`.
 2. Enter the admin password (see [Security Notes](#security-notes)).
 3. View the dashboard and download the **Administrative PDF Report**.
 
@@ -202,7 +180,7 @@ CommunityConnect/
 ├── registration.php          # New-user sign-up
 ├── registration1.php         # Activity registration step
 ├── confirmation.php          # Registration confirmation
-├── registrantPortal.php      # Registrant home / portal
+├── registrantPortal.php      # Registrant portal
 ├── registrantView.php        # View registrations
 ├── registrantUpdate.php      # Update a registration
 ├── registrantDelete.php      # Delete a registration
@@ -212,30 +190,16 @@ CommunityConnect/
 ├── sendRegistrationEmail.php # Email sender (PHPMailer)
 ├── mailConfiguration.php     # SMTP settings
 ├── connectDatabase.php       # MySQLi connection settings
-├── community_connectdb.sql   # Database schema + seed data
+├── community_connectdb.sql   # Database schema + initial data
 ├── mainStyle.css             # Shared stylesheet
 ├── img/                      # Background images
 ├── composer.json / .lock     # PHP dependencies
 └── vendor/                   # Installed dependencies (PHPMailer, Dompdf)
 ```
 
-## Troubleshooting
-
-| Problem | Fix |
-|---------|-----|
-| **Apache won't start (XAMPP/WAMP)** | Port 80 is probably used by another program (Skype, IIS, another web server). Stop it or change Apache's port in `httpd.conf` / the control panel. |
-| **MySQL won't start** | Port 3306 is in use by another MySQL service. Stop it or change the port. |
-| **`404 Not Found` at `/CommunityConnect/`** | The folder is in the wrong place or misnamed. Re-check [step 2](#2-place-the-project-in-the-correct-folder). |
-| **"Database connection failed"** | MySQL isn't running, the database wasn't imported, or the credentials in `connectDatabase.php` are wrong. |
-| **Import fails / file too large** | Increase `upload_max_filesize` and `post_max_size` in `php.ini`, then restart Apache. |
-| **Blank page / PHP errors** | Confirm PHP 8.1+ and check the Apache error log. |
-| **Class `PHPMailer` / `Dompdf` not found** | The `vendor/` folder is missing — run `composer install`. |
-| **Emails are not arriving** | Verify the Gmail App Password in `mailConfiguration.php`, check your spam folder, and confirm your network allows outbound port 587. |
-| **PDF fails to generate** | Ensure the PHP `mbstring` and `gd` extensions are enabled in `php.ini`. |
-
 ## Security Notes
 
-This project is intended for coursework / local development. Before any real deployment:
+This project is intended for coursework/ local development. Before any real deployment:
 
 - The admin password is currently hard-coded in `admin.php`. Change it, or move it into configuration/environment variables.
 - Do **not** commit real SMTP credentials. Replace the values in `mailConfiguration.php` with your own, and consider revoking any App Password that has been shared or pushed to a public repository.
