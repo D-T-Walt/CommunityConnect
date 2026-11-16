@@ -78,6 +78,7 @@ require "connectDatabase.php";
             $stAct->close();
 
             if($activityID !== null){
+                date_default_timezone_set("America/Jamaica");
                 $regDate = date("Y-m-d");
                 $stReg = $conn->prepare(
                     "INSERT INTO registrations (email, activityID, parish, participationDate, registrationDate)
@@ -149,6 +150,11 @@ require "connectDatabase.php";
                 <button type='button' onclick=\"window.location.href='registrantPortal.php';\">OK</button>
             </div>
             </div>";
+        
+        if (!isset($_SESSION["logged_in"])) {
+            session_unset();
+            session_destroy();
+        }
     }
 
     if (isset($_POST["logout"])) {
@@ -204,26 +210,52 @@ require "connectDatabase.php";
 
         </header>
 
-        <?php 
-            echo "<form class=\"delete-form\" id=\"deleteForm\" action=\"\" method=\"post\">";
-                echo "<table>";
-                echo "<tr><th>Field</th><th>Your Entries</th><th>Edit Name</th></tr>";
-                //Display the name field first with the input bax for deleting and rewriting, because the name should be at the top of the list even after update.
-                echo "<tr><td>Full Name</td><td>" . htmlspecialchars($_SESSION["Full_Name"]) . "</td><td><input class=\"form-control\" type=\"text\" name=\"newInfo\" ></td></tr>";
-                //For each session index and value, the index underscores are replaced with spaces for better readability
-                //And the value is displayed in the entries field
-                foreach ($_SESSION as $index => $value) {
-                    $replacedUnderscore = str_replace("_", " ", $index);
-                    //When Full_Name index is seen the loop continues to the next loop, because Full_Name is already displayed
-                    if($index === "Full_Name" || $index === "Password" || $index === "logged_in" || $index === "cc_admin_authenticated"){
-                        continue;
-                    }else{
-                        echo "<tr><td>" . htmlspecialchars($replacedUnderscore) . "</td><td>" . htmlspecialchars($value) . "</td><td></td></tr>";
+        <?php
+            if (!isset($_SESSION["logged_in"])) { 
+                echo "<form class=\"delete-form\" id=\"deleteForm\" action=\"\" method=\"post\">";
+                    echo "<table>";
+                    echo "<tr><th>Field</th><th>Your Entries</th><th>Edit Name</th></tr>";
+                    //Display the name field first with the input bax for deleting and rewriting, because the name should be at the top of the list even after update.
+                    if (isset($_SESSION["Full_Name"])) {
+                        echo "<tr><td>Full Name</td><td>" . htmlspecialchars($_SESSION["Full_Name"]) . "</td><td><input class=\"form-control\" type=\"text\" name=\"newInfo\" ></td></tr>";
                     }
-                }
-                echo "</table>";
-                echo "<p style='text-align: center; color: #a52834;'>" . $belowMessage . "</p>";
-            echo "</form>";
+                    //For each session index and value, the index underscores are replaced with spaces for better readability
+                    //And the value is displayed in the entries field
+                    foreach ($_SESSION as $index => $value) {
+                        $replacedUnderscore = str_replace("_", " ", $index);
+                        //When Full_Name index is seen the loop continues to the next loop, because Full_Name is already displayed
+                        if($index === "Full_Name" || $index === "Password" || $index === "logged_in" || $index === "cc_admin_authenticated"){
+                            continue;
+                        }else{
+                            echo "<tr><td>" . htmlspecialchars($replacedUnderscore) . "</td><td>" . htmlspecialchars($value) . "</td><td></td></tr>";
+                        }
+                    }
+                    echo "</table>";
+                    echo "<p style='text-align: center; color: #a52834;'>" . $belowMessage . "</p>";
+                echo "</form>";
+            }else{
+                echo "<form class=\"delete-form\" id=\"deleteForm\" action=\"\" method=\"post\">";
+                    echo "<table>";
+                    echo "<tr><th>Field</th><th>Your Entries</th></tr>";
+                    //Display the name field first with the input bax for deleting and rewriting, because the name should be at the top of the list even after update.
+                    if (isset($_SESSION["Full_Name"])) {
+                        echo "<tr><td>Full Name</td><td>" . htmlspecialchars($_SESSION["Full_Name"]) . "</td></tr>";
+                    }
+                    //For each session index and value, the index underscores are replaced with spaces for better readability
+                    //And the value is displayed in the entries field
+                    foreach ($_SESSION as $index => $value) {
+                        $replacedUnderscore = str_replace("_", " ", $index);
+                        //When Full_Name index is seen the loop continues to the next loop, because Full_Name is already displayed
+                        if($index === "Full_Name" || $index === "Password" || $index === "logged_in" || $index === "cc_admin_authenticated"){
+                            continue;
+                        }else{
+                            echo "<tr><td>" . htmlspecialchars($replacedUnderscore) . "</td><td>" . htmlspecialchars($value) . "</td></tr>";
+                        }
+                    }
+                    echo "</table>";
+                    echo "<p style='text-align: center; color: #a52834;'>" . $belowMessage . "</p>";
+                echo "</form>";
+            }
         ?>
 
         <!--Navigation Buttons-->
@@ -232,11 +264,13 @@ require "connectDatabase.php";
             <a href="registration1.php" class="return-form">
                 Back
             </a>
-
-            <form method="post" class="button-form">
-                <input type="submit" name="delete" form="deleteForm" value="Delete & Rewrite Name">
-            </form>
-
+            <?php 
+                if(!isset($_SESSION["logged_in"])){ 
+                    echo '<form method="post" class="button-form">
+                            <input type="submit" name="delete" form="deleteForm" value="Delete & Rewrite Name">
+                          </form>';
+                }
+            ?>
             <form method="post" class="button-form">
                 <input type="submit" name="confirm" value="Confirm & Finish Registration">
             </form>
