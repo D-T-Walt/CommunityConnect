@@ -95,7 +95,7 @@ For XAMPP on Linux: `sudo /opt/lampp/lampp start`
    - **XAMPP:** username `root`, password blank (leave empty).
    - **WAMP:** username `root`, password blank (leave empty).
    - **LAMP:** use the MySQL credentials you configured during installation.
-2. Click the **Import** tab in the top menu. *(Stay on the server home page — you do not need to create or select a database first.)*
+2. Click the **Import** tab in the top menu. *(Stay on the server home page, you do not need to create or select a database first.)*
 3. Under *File to import*, click **Choose File** and select:
 
    ```
