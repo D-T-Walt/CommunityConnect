@@ -3,7 +3,7 @@
 <!--Shemael Deslandes - 2306823 -->
 <!--Olivia McFarlane - 2301555 -->
 <?php
-$file = "registrations.txt";
+
 $message = "";
 $belowMessage = "";
 
@@ -45,12 +45,13 @@ require "connectDatabase.php";
         $skills=$_SESSION["Interest_Skills"];
         $password=$_SESSION["Password"];
 
+        //Split the full name into first name and last name
         $nameParts = explode(" ", $name);
         $firstName = $nameParts[0];
         $lastName = end($nameParts);
 
         try {
-            // Check this back so if the registrant already exists in the database
+            //Only insert a new registrant profile for new users
             if(!isset($_SESSION["logged_in"]) || $_SESSION["logged_in"] !== true) {
                 $stRegistrant = $conn->prepare(
                     "INSERT INTO registrants (email, firstName, lastName, password, age, phoneNumber)
@@ -62,7 +63,7 @@ require "connectDatabase.php";
                 $stRegistrant->close();
             }
             
-
+            //Check for the activityID based on the selected activity/event name
             $activityID = null;
             $stAct = $conn->prepare(
                 "SELECT activityID
@@ -74,11 +75,13 @@ require "connectDatabase.php";
             $stAct->execute();
             $resultAct = $stAct->get_result();
 
+            //Store the activityID found
             if($rowAct = $resultAct->fetch_assoc()){
                 $activityID = $rowAct["activityID"];
             }
             $stAct->close();
 
+            //If a valid activityID was found, insert event registration record
             if($activityID !== null){
                 date_default_timezone_set("America/Jamaica");
                 $regDate = date("Y-m-d");
@@ -94,12 +97,14 @@ require "connectDatabase.php";
                 $newRegistrationID = (int)$conn->insert_id;
             }
 
+            //Convert skills to an array to insert into registrants_skills
             $skillArr = is_array($skills) ? $skills : explode("|", $skills);
             $stSkill = $conn->prepare(
                 "INSERT IGNORE INTO registrants_skills (email, skill)
                 VALUES (?, ?)"
             ); 
             
+            //Loop to insert selected skills
             foreach($skillArr as $skill)
             {   
                 $cleanSkill = trim($skill);

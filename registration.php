@@ -5,11 +5,12 @@
     //Start the session to access session variables
     session_start();
     require "connectDatabase.php";
-        
+        //Checks if the user is already logged-in in and redirect to the next page if they are
         if(isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true) {
-            // User is already logged in, redirect to the next page
+            //Retrieve the logged-in user's email
             $email = $_SESSION["Email_Address"];
 
+            //Query to get the registrants profile information
             try{
                 $st = $conn->prepare(
                     "SELECT firstName, lastName, password, age, phoneNumber
@@ -22,6 +23,7 @@
 
                 $result = $st->get_result();
 
+                //If registrant is found, populate session variable
                 if($row = $result->fetch_assoc()){
                     $_SESSION["Full_Name"] = $row["firstName"] . " " . $row["lastName"];
                     $_SESSION["Password"] = $row["password"];

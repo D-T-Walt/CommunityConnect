@@ -3,11 +3,13 @@
     session_start();
     require "connectDatabase.php";
 
+    //Send unauthicated users back to the index page
     if (empty($_SESSION['logged_in']) || empty($_SESSION['Email_Address'])) {
         header("Location: index.php");
         exit();
     }
 
+    //Sends back to registrantView if no registration record was selected
     if(!isset($_POST['registrationID'])){
         header("Location: registrantView.php");
         exit();
@@ -32,6 +34,7 @@
     ];
 
     if(isset($_POST["save"])){
+        //Check that all fields have something entered
         if (empty(trim($_POST['Full_Name'])) || empty(trim($_POST['Phone_Number'])) || empty(trim($_POST['Age'])) || (empty(($_POST['Parish'])) || empty(($_POST['Event'])) || 
         empty(($_POST['Preferred_Participation_Date'])) || empty($_POST['Interest_Skills']))){
             $message .= "⚠️ A field is empty!  All fields are required ⚠️";
@@ -63,23 +66,27 @@
             $validBool = false;
         }
 
+        //Validate that preferred participation date is within 2027
         $d = DateTime::createFromFormat('Y-m-d', $date);
         if(!$d || $d->format('Y-m-d') !== $date || $date < "2027-01-01" || $date > "2027-12-31") {
             $message .= "<br>⚠️ Invalid Date Format. Date must be within 2027. ⚠️";
             $validBool = false;
         }
 
+        //Ensure all submitted skills exist in the allowed skills list
         if(array_diff($skills, $availableSkills)) {
             $message .= "<br>⚠️ Invalid Interest/Skills Selection ⚠️";
             $validBool = false;
         }
         
+        //Proceed with database updates only if all validation checks pass
         if($validBool){
             $nameParts = explode(" ", $name);
             $firstName = $nameParts[0];
             $lastName = end($nameParts);
 
             try{
+                //Update personal details in the registrants table
                 $stRegistrant = $conn->prepare(
                     "UPDATE registrants
                     SET firstName = ?,lastName = ?, age = ?, phoneNumber = ?
@@ -90,6 +97,7 @@
                 $stRegistrant->execute();
                 $stRegistrant->close();
 
+                //Retrieve the activityID matching the selected activity/event
                 $activityID = null;
                 $stAct = $conn->prepare(
                     "SELECT activityID
@@ -106,6 +114,7 @@
                 }
                 $stAct->close();
 
+                //Uppdate the specific registration record
                 if($activityID !== null){
                     $stReg = $conn->prepare(
                         "UPDATE registrations 
@@ -116,7 +125,8 @@
                     $stReg->execute();
                     $stReg->close();
                 }
-
+                
+                //Clear the registrant's existing skils before inserting the update
                 $stDelSkills = $conn->prepare(
                     "DELETE FROM registrants_skills
                     WHERE email = ?"
@@ -126,6 +136,7 @@
                 $stDelSkills->execute();
                 $stDelSkills->close();
 
+                //Prepare statement to insert newly selected skill
                 $stSkill = $conn->prepare(
                     "INSERT IGNORE INTO registrants_skills (email, skill)
                     VALUES (?, ?)"
@@ -153,7 +164,9 @@
         
     }
 
+    //Get current record info to populate the form fields
     try{
+        //Join registrations, registrants, and activities to retrieve current record details
         $st = $conn->prepare(
             "SELECT reg.registrationID,
                     CONCAT(r.firstName, ' ', r.lastName) AS fullName,
@@ -173,16 +186,19 @@
         $currRec = $st->get_result()->fetch_assoc();
         $st->close();
 
+        //Redirect if there is no matching record
         if(!$currRec){
             header("Location: registrantView.php");
             exit();
         }
 
+        //Fetch all activities
         $actResult = $conn->query(
             "SELECT activity
             FROM activities"
         );
 
+        //Get the user's currently saved skills 
         $stSkills = $conn->prepare(
             "SELECT skill
             FROM registrants_skills
@@ -197,14 +213,17 @@
         }
         $stSkills->close();
     }catch(mysqli_sql_exception $ex){
+        //Terminate execution if form data cannot be loaded
         die("Error loading registration data.");
     }
     
+    //Redirect to registrantView without saving if "Cancel" is clicked
     if(isset($_POST["cancel"])){
         header("Location: registrantView.php");
         exit();
     }
 
+    //Destroy the session and redirect to index if "Logout" is clicked
     if (isset($_POST["logout"])) {
         session_unset();
         session_destroy();
@@ -313,6 +332,7 @@
             </div>
         </header>
 
+        <!--Display error message-->
         <?php
             if (!empty($message)) {
                 echo "<p class='error-text'>$message</p>";
